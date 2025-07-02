@@ -1,0 +1,43 @@
+name: MERN Todo App CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+
+    # Backend setup
+    - name: Install backend dependencies
+      working-directory: ./backend
+      run: npm install
+
+    - name: Run backend tests (if you add them)
+      working-directory: ./backend
+      run: npm test
+      env:
+        MONGO_URI: ${{ secrets.MONGO_URI }}
+        PORT: 5000
+
+    # Frontend setup
+    - name: Install frontend dependencies
+      working-directory: ./frontend
+      run: npm install
+
+    - name: Build frontend
+      working-directory: ./frontend
+      run: npm run build
+
+    # Deployment steps would go here
+    # This depends on your hosting platform (Vercel, AWS, Heroku, etc.)
